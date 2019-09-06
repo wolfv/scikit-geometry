@@ -20,7 +20,7 @@ def draw_list(point_list, fig=None, ax=None, **kwargs):
 
 def draw_vector(vector, start=-5, stop=5, units='xy', angles='xy', scale_units='xy', scale=1, fig=None, ax=None, **kwargs):
 	if fig == None and ax == None:
-		fig, ax = plt.subplots()
+		fig, ax = plt.gcf(), plt.gca()
 
 	vector_x = float(vector.x())
 	vector_y = float(vector.y())
@@ -33,7 +33,7 @@ def draw_vector(vector, start=-5, stop=5, units='xy', angles='xy', scale_units='
 
 def draw_ray(ray, stop=0, num=100, color = '#1f77b4', units='xy', angles='xy', scale_units='xy', scale=1, fig=None, ax=None, **kwargs):
 	if fig == None and ax == None:
-		fig, ax = plt.subplots()
+		fig, ax = plt.gcf(), plt.gca()
 	
 	def set_xmargin(ax, left=0.0, right=0.0):
 	    ax.set_xmargin(0)
@@ -77,7 +77,7 @@ def draw_ray(ray, stop=0, num=100, color = '#1f77b4', units='xy', angles='xy', s
 
 def draw_direction(direction, start=-2, stop=2, units='xy', angles='xy', scale_units='xy', scale=1, fig=None, ax=None, **kwargs):
 	if fig == None and ax == None:
-		fig, ax = plt.subplots()
+		fig, ax = plt.gcf(), plt.gca()
 
 	direction_x = float(direction.dx())
 	direction_y = float(direction.dy())
@@ -93,7 +93,7 @@ def draw_direction(direction, start=-2, stop=2, units='xy', angles='xy', scale_u
 
 def draw_bbox(bbox, display_range = 5, fill = False, fig=None, ax=None, **kwargs):
 	if fig == None and ax == None:
-		fig, ax = plt.subplots()
+		fig, ax = plt.gcf(), plt.gca()
 
 	x_min = float(bbox.xmin())
 	x_max = float(bbox.xmax())
@@ -108,7 +108,7 @@ def draw_bbox(bbox, display_range = 5, fill = False, fig=None, ax=None, **kwargs
 
 def draw_line(line, start=-5, stop=5, num=100, fig=None, ax=None, **kwargs):
 	if fig == None and ax == None:
-		fig, ax = plt.subplots()
+		fig, ax = plt.gcf(), plt.gca()
 
 	x = np.linspace(start,stop,num)
 	y = (-line.a()*x-line.c())/line.b()
@@ -118,7 +118,7 @@ def draw_line(line, start=-5, stop=5, num=100, fig=None, ax=None, **kwargs):
 
 def draw_iso_rectangle(rectangle, display_range = 5, fill = False, fig=None, ax=None, **kwargs):
 	if fig == None and ax == None:
-		fig, ax = plt.subplots()
+		fig, ax = plt.gcf(), plt.gca()
 
 	x_min = float(rectangle.xmin())
 	x_max = float(rectangle.xmax())
@@ -133,14 +133,14 @@ def draw_iso_rectangle(rectangle, display_range = 5, fill = False, fig=None, ax=
 
 def draw_segment(segment, color = '#1f77b4', fig= None, ax=None, **kwargs):
 	if fig == None and ax == None:
-		fig, ax = plt.subplots()
+		fig, ax = plt.gcf(), plt.gca()
 
 	plt.plot([segment.source().x(), segment.target().x()], [segment.source().y(), segment.target().y()], color = color, **kwargs)
 	draw_list([segment.source(), segment.target()], color=color, **kwargs)
 
 def draw_circle(circle, display_range = 5, fill = False, fig=None, ax=None, **kwargs):
 	if fig == None and ax == None:
-		fig, ax = plt.subplots()
+		fig, ax = plt.gcf(), plt.gca()
 
 	center_x = float(circle.center().x())
 	center_y = float(circle.center().y())
@@ -159,7 +159,7 @@ def to_list_of_tuples(iterable):
 
 def draw_polygon(poly=None,poly_with_holes=None, vertices=None, plt=plt, facecolor='none', point_color='none', line_width = 2, plot_vertices=True, fig=None, ax=None):
 	if fig == None and ax == None:
-		fig, ax = plt.subplots()
+		fig, ax = plt.gcf(), plt.gca()
 
 	vertices = to_list_of_tuples(poly.vertices) + [(0, 0)]
 	poly_length = 0
@@ -191,7 +191,7 @@ def draw_polygon(poly=None,poly_with_holes=None, vertices=None, plt=plt, facecol
 
 def draw_voronoi(voronoi,display_range = 3, edges_color='blue', sites_color='red', vertices_color ='None', finite_edges_color='blue', fig=None, ax=None):
 	if fig == None and ax == None:
-		fig, ax = plt.subplots()
+		fig, ax = plt.gcf(), plt.gca()
 
 	for edge in voronoi.edges:
 		source, target = edge.source(), edge.target()
@@ -207,57 +207,61 @@ def draw_voronoi(voronoi,display_range = 3, edges_color='blue', sites_color='red
 		draw_point(vertice.point(), color=vertices_color)
 
 	for el in voronoi.finite_edges:
-		draw_object(el, color=finite_edges_color, fig=fig, ax=ax)
+		draw(el, color=finite_edges_color, fig=fig, ax=ax)
 
 	plt.xlim(bbox.xmin() - display_range, bbox.xmax() + display_range)
 	plt.ylim(bbox.ymin() - display_range, bbox.ymax() + display_range)
 
 @dispatch(pygal._pygal.Point2)
-def draw_object(object, **kwargs):
+def draw(object, **kwargs):
 	draw_point(object, **kwargs)
 
 @dispatch(list)
-def draw_object(object, **kwargs):
+def draw(object, **kwargs):
 	for el in object:
-		draw_object(el, **kwargs)
+		draw(el, **kwargs)
 
 @dispatch(pygal._pygal.Vector2)
-def draw_object(object, **kwargs):
+def draw(object, **kwargs):
 	draw_vector(object, **kwargs)
 
 @dispatch(pygal._pygal.Ray2)
-def draw_object(object, **kwargs):
+def draw(object, **kwargs):
 	draw_ray(object, **kwargs)
 
 @dispatch(pygal._pygal.Direction2)
-def draw_object(object, **kwargs):
+def draw(object, **kwargs):
 	draw_direction(object, **kwargs)
 
 @dispatch(pygal._pygal.Bbox2)
-def draw_object(object, **kwargs):
+def draw(object, **kwargs):
 	draw_bbox(object, **kwargs)
 
 @dispatch(pygal._pygal.Line2)
-def draw_object(object, **kwargs):
+def draw(object, **kwargs):
 	draw_line(object, **kwargs)
 
 @dispatch(pygal._pygal.IsoRectangle2)
-def draw_object(object, **kwargs):
+def draw(object, **kwargs):
 	draw_iso_rectangle(object, **kwargs)
 
 @dispatch(pygal._pygal.Segment2)
-def draw_object(object, **kwargs):
+def draw(object, **kwargs):
 	draw_segment(object, **kwargs)
 
 @dispatch(pygal._pygal.Circle2)
-def draw_object(object, **kwargs):
+def draw(object, **kwargs):
 	draw_circle(object, **kwargs)
 
 @dispatch(pygal._pygal.Polygon)
-def draw_object(object, **kwargs):
+def draw(object, **kwargs):
+	draw_polygon(object, **kwargs)
+
+@dispatch(pygal._pygal.PolygonWithHoles)
+def draw(object, **kwargs):
 	draw_polygon(object, **kwargs)
 
 @dispatch(pygal._pygal.voronoi.VoronoiDiagram)
-def draw_object(object, **kwargs):
+def draw(object, **kwargs):
 	draw_voronoi(object, **kwargs)
 
