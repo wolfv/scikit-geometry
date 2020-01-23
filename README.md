@@ -46,6 +46,26 @@ print(s)
 >>> Segment_2(PointC2(5, 3), PointC2(10, 8))
 ```
 
+## Installation
+
+scikit-geometry can be installed from conda. It is packaged for Linux, Windows and OS X on the conda-forge channel.
+If you do not use the conda package manager yet, we recommend to install a Miniconda distribution.
+
+```sh
+conda install -c conda-forge scikit-geometry
+```
+
+You can also build scikit-geometry from source by running the setup.py installer. Note that you need to have CGAL 5.0 installed on your
+system.
+
+Running the following command inside the cloned github repository
+
+```
+python -m pip install -e . -v
+```
+
+should give you a working installation of scikit-geometry. Note that building scikit-geometry takes quite some time!
+
 ## Documentation
 
 The docs are hosted on github: [https://scikit-geometry.github.io/scikit-geometry](https://scikit-geometry.github.io/scikit-geometry)
